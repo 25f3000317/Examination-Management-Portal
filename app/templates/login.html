@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Examination Management Portal{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="container min-vh-100 d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 440px;">
+
+        <h2 class="text-center mb-2">Portal Login</h2>
+        <p class="text-center text-muted mb-4">
+            Sign in to your account
+        </p>
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="mb-3">
+                <label for="email" class="form-label">
+                    Email <span class="required">*</span>
+                </label>
+                <input type="text" class="form-control" id="email" name="email" maxlength="254" required autocomplete="username">
+            </div>
+            <!-- here keep type = "email" if basic email syntax needs to be validated in html itself before flask auth_roles.py -->
+            <div class="mb-4">
+                <label for="password" class="form-label">
+                    Password <span class="required">*</span>
+                </label>
+                <input type="password" class="form-control"
+                       id="password" name="password"
+                       required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Login
+            </button>
+        </form>
+
+        <hr>
+
+        <p class="text-center mb-2">New to the portal?</p>
+
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('auth.register', role='Student') }}"
+               class="btn btn-outline-primary">
+                Register as Student
+            </a>
+
+            <a href="{{ url_for('auth.register', role='Examiner') }}"
+               class="btn btn-outline-primary">
+                Register as Examiner
+            </a>
+        </div>
+
+        <p class="text-center text-muted small mt-3 mb-0">
+            Administrator accounts are created separately.
+        </p>
+
+    </div>
+</div>
+{% endblock %}

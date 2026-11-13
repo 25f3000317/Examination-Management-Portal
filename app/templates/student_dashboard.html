@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Student Dashboard</h2>
+    <p>Welcome, {{ g.user["name"] }}.</p>
+
+    <div class="row g-3 mt-3">
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h5>Available Examinations</h5>
+                <p>Browse examinations and book an available slot.</p>
+                <a href="#" class="btn btn-primary">Browse Examinations</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h5>My Bookings</h5>
+                <p>View, cancel or reschedule your examination bookings.</p>
+                <a href="#" class="btn btn-primary">My Bookings</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h5>My Results</h5>
+                <p>View published examination results and feedback.</p>
+                <a href="#" class="btn btn-primary">View Results</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

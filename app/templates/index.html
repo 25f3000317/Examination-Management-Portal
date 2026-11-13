@@ -1,10 +1,8 @@
-
 {% extends "base.html" %}
 
 {% block title %}Home | Examination Portal{% endblock %}
 
 {% block header %}{% endblock %}
-{% block navbar %}{% endblock %}
 
 {% block content %}
 <div class="overflow-hidden">
@@ -16,20 +14,49 @@
             <p class="text-secondary">A centralised platform for examination scheduling, booking, evaluation and result management.</p>
         </section>
 
+        {% if g.user %}
+        <div class="text-center mt-4">
+            <h4>Welcome back, {{ g.user["name"] }}!</h4>
+
+            {% if g.user["role"] == "Admin" %}
+                <a href="{{ url_for('admin_dashboard') }}"
+                class="btn btn-primary">
+                    Go to Admin Dashboard
+                </a>
+            {% elif g.user["role"] == "Examiner" %}
+                <a href="{{ url_for('examiner_dashboard') }}"
+                class="btn btn-primary">
+                    Go to Examiner Dashboard
+                </a>
+            {% elif g.user["role"] == "Student" %}
+                <a href="{{ url_for('student_dashboard') }}"
+                class="btn btn-primary">
+                    Go to Student Dashboard
+                </a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="text-center mt-4">
+            <h4>Get Started</h4>
+            <p class="text-secondary">Register as a student or examiner, or log in to your account.</p>
+        </div>
         <section class="mb-5">
             <div class="row justify-content-center g-3">
                 <div class="col-md-4 col-lg-3">
-                    <a href="{{ url_for('about') }}" class="btn btn-outline-primary w-100">Register Student</a>
+                    <a href="{{ url_for('auth.register', role='Student') }}" class="btn btn-outline-primary w-100">Register as Student</a>
                 </div>
                 <div class="col-md-4 col-lg-3">
-                    <a href="{{ url_for('about') }}" class="btn btn-outline-primary w-100">Student Login</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary w-100">Student / Examiner Login</a>
                 </div>
                 <div class="col-md-4 col-lg-3">
-                    <a href="{{ url_for('about') }}" class="btn btn-outline-primary w-100">Admin Login</a>
+                    <a href="{{ url_for('auth.register', role='Examiner') }}"class="btn btn-outline-primary w-100">Register as Examiner</a>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary w-100">Admin Login</a>
                 </div>
             </div>
         </section>
-
+        {% endif %}
         <section class="mt-5">
             <h4 class="text-center fw-bold mb-4">Why Choose Our Platform?</h4>
             <div class="row justify-content-center g-4 align-items-stretch">

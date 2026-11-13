@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Examiner Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Examiner Dashboard</h2>
+    <p>Welcome, {{ g.user["name"] }}.</p>
+
+    <div class="row g-3 mt-3">
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h5>Assigned Examinations</h5>
+                <p>View examinations assigned to you.</p>
+                <a href="#" class="btn btn-primary">View Examinations</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h5>Evaluations</h5>
+                <p>Review bookings and evaluate student submissions.</p>
+                <a href="#" class="btn btn-primary">Manage Evaluations</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,17 @@
-{% extends "base.html" %}
-{% block title %}About{% endblock %}
-{% block content %}
-<p>This is the About page for the {{portal_name}}. It is helpful to {{description}}.</p>
-<p>The current version is {{version}}.</p>
-<p>{% if maintenance %}The portal is currently under maintenance.{% else %}The portal is operational.{% endif %}</p>
+{% extends "base.html" %} {% block title %}About{% endblock %} {% block content %}
+
+<div class="container-fluid mt-4">
+<div class="card">
+<div class="card-body">
+<h2>About {{ portal_name }}</h2>
+<p>{{ description }}</p>
+<p><strong>Current Version:</strong> {{ version }}</p>
+{% if maintenance %}
+<div class="alert alert-warning">The portal is currently under maintenance.</div>
+{% else %}
+<div class="alert alert-success">The portal is operational.</div>
+{% endif %}
+</div>
+</div>
+</div>
 {% endblock %}

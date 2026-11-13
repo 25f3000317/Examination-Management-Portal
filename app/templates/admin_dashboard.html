@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Admin Dashboard</h2>
+    <p>Welcome, {{ g.user["name"] }}.</p>
+
+    <div class="row g-3 mt-3">
+        <div class="col-md-4">
+            <div class="card p-3 h-100">
+                <h5>Manage Users</h5>
+                <p>View and manage student and examiner accounts.</p>
+                <a href="#" class="btn btn-primary">Manage Users</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 h-100">
+                <h5>Manage Examinations</h5>
+                <p>Create examinations and configure their details.</p>
+                <a href="#" class="btn btn-primary">Manage Examinations</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 h-100">
+                <h5>Examiner Approvals</h5>
+                <p>Review pending examiner registrations.</p>
+                <a href="#" class="btn btn-primary">Review Approvals</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
