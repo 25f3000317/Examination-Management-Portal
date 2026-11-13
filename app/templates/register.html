@@ -8,114 +8,55 @@
     <div class="card shadow-sm p-4 mx-auto" style="max-width: 600px;">
 
         <h2 class="text-center mb-2">{{ role }} Registration</h2>
-        <p class="text-center text-muted mb-4">
-            Create your {{ role|lower }} account
-        </p>
+        <p class="text-center text-muted mb-4">Create your {{ role|lower }} account</p>
 
-        <form method="POST"
-              action="{{ url_for('auth.register', role=role) }}">
-
-            <input type="hidden" name="csrf_token"
-                   value="{{ csrf_token() }}">
-
+        <form method="POST" action="{{ url_for('auth.register', role=role) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="mb-3">
-                <label class="form-label" for="name">
-                    Full Name <span class="required">*</span>
-                </label>
-                <input class="form-control" id="name" name="name"
-                       maxlength="100" required>
+                <label class="form-label" for="name">Full Name <span class="required">*</span></label>
+                <input class="form-control" id="name" name="name" maxlength="100" required>
             </div>
-
             <div class="mb-3">
-                <label class="form-label" for="email">
-                    Email <span class="required">*</span>
-                </label>
-                <input class="form-control" type="email"
-                       id="email" name="email"
-                       maxlength="254" required>
+                <label class="form-label" for="email">Email <span class="required">*</span></label>
+                <input class="form-control" type="text" id="email" name="email" maxlength="254" required>
             </div>
-
+<!-- here type has been changed to text for development purposes as is with login.html as well -->
             <hr>
-
             <h5>Profile Details</h5>
-
             <div class="mb-3">
-                <label class="form-label" for="department">
-                    Department <span class="required">*</span>
-                </label>
-                <input class="form-control" id="department"
-                       name="department" maxlength="100" required>
+                <label class="form-label" for="department">Department <span class="required">*</span></label>
+                <input class="form-control" id="department" name="department" maxlength="100" required>
             </div>
 
             {% if role == "Student" %}
-
                 <div class="mb-3">
-                    <label class="form-label" for="enrollment_number">
-                        Enrollment Number <span class="required">*</span>
-                    </label>
-                    <input class="form-control" id="enrollment_number"
-                           name="enrollment_number"
-                           maxlength="50" required>
+                    <label class="form-label" for="enrollment_number">Enrollment Number <span class="required">*</span></label>
+                    <input class="form-control" id="enrollment_number" name="enrollment_number" maxlength="50" required>
                 </div>
-
                 <div class="mb-3">
-                    <label class="form-label" for="semester">
-                        Semester <span class="required">*</span>
-                    </label>
-                    <input class="form-control" type="number"
-                           id="semester" name="semester"
-                           min="1" required>
+                    <label class="form-label" for="semester">Semester <span class="required">*</span></label>
+                    <input class="form-control" type="number" id="semester" name="semester" min="1" required>
                 </div>
-
             {% elif role == "Examiner" %}
-
                 <div class="mb-3">
-                    <label class="form-label" for="designation">
-                        Designation <span class="required">*</span>
-                    </label>
-                    <input class="form-control" id="designation"
-                           name="designation"
-                           maxlength="100" required>
+                    <label class="form-label" for="designation">Designation <span class="required">*</span></label>
+                    <input class="form-control" id="designation" name="designation" maxlength="100" required>
                 </div>
-
             {% endif %}
-
             <hr>
-
             <div class="mb-3">
-                <label class="form-label" for="password">
-                    Password <span class="required">*</span>
-                </label>
-                <input class="form-control" type="password"
-                       id="password" name="password"
-                       minlength="8" maxlength="128"
-                       required autocomplete="new-password">
-                <small class="text-muted">
-                    Minimum 8 characters.
-                </small>
+                <label class="form-label" for="password">Password <span class="required">*</span></label>
+                <input class="form-control" type="password" id="password" name="password" minlength="1" maxlength="128" required autocomplete="new-password">
+                <small class="text-muted">Minimum 8 characters.</small>
             </div>
-
+            <!-- here password requirements have been changed to minimum 1 character for development purposes needs to be changed to 8 when deploying. changes also made in login.html along with auth_rotes.py -->
             <div class="mb-3">
-                <label class="form-label" for="confirm_password">
-                    Confirm Password <span class="required">*</span>
-                </label>
-                <input class="form-control" type="password"
-                       id="confirm_password" name="confirm_password"
-                       minlength="8" maxlength="128"
-                       required autocomplete="new-password">
+                <label class="form-label" for="confirm_password">Confirm Password <span class="required">*</span></label>
+                <input class="form-control" type="password" id="confirm_password" name="confirm_password" minlength="1" maxlength="128" required autocomplete="new-password">
             </div>
-
-            <button type="submit" class="btn btn-primary w-100">
-                Register as {{ role }}
-            </button>
-
+            <button type="submit" class="btn btn-primary w-100">Register as {{ role }}</button>
         </form>
-
-        <p class="text-center mt-3 mb-0">
-            Already registered?
-            <a href="{{ url_for('auth.login') }}">Login here</a>
-        </p>
-
+        <p class="text-center mt-3 mb-0">Already registered?<a href="{{ url_for('auth.login') }}">Login here</a></p>
     </div>
 </div>
 {% endblock %}

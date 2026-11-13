@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+<h2>Booked Students</h2>
+<p><strong>{{ slot.exam_name }}</strong> | {{ slot.slot_date }} | {{ slot.start_time }} - {{ slot.end_time }}</p>
+<table class="table table-bordered">
+<thead><tr><th>Booking ID</th><th>Student</th><th>Enrollment Number</th><th>Department</th><th>Semester</th><th>Status</th></tr></thead>
+<tbody>
+{% for student in students %}
+<tr>
+<td>{{ student.booking_id }}</td>
+<td>{{ student.name }}</td>
+<td>{{ student.enrollment_number }}</td>
+<td>{{ student.department }}</td>
+<td>{{ student.semester }}</td>
+<td>{{ student.booking_status }}</td>
+</tr>
+{% else %}
+<tr><td colspan="6">No students have booked this slot.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+<a href="{{ url_for('examiner_slots',exam_id=slot.exam_id) }}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

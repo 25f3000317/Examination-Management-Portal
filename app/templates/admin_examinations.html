@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Manage Examinations | Examination Portal{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div><h2>Manage Examinations</h2><p class="text-muted mb-0">Create examinations, configure timelines and manage availability.</p></div>
+        <div class="d-flex gap-2"><a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">Dashboard</a><a href="{{ url_for('create_examination') }}" class="btn btn-primary">Add Examination</a></div>
+    </div>
+    <form method="GET" class="card card-body mb-4">
+        <div class="row g-2">
+            <div class="col-md-7"><input name="q" class="form-control" value="{{ q }}" placeholder="Search by exam name, course, course code or ID"></div>
+            <div class="col-md-3"><select name="status" class="form-select"><option value="All" {% if status=="All" %}selected{% endif %}>All statuses</option>{% for s in ["Draft","Active","Completed","Cancelled"] %}<option value="{{ s }}" {% if status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+            <div class="col-md-2 d-flex gap-2"><button class="btn btn-primary">Search</button><a href="{{ url_for('manage_examinations') }}" class="btn btn-outline-secondary">Reset</a></div>
+        </div>
+    </form>
+    {% if exams %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light"><tr><th>ID / Examination</th><th>Course</th><th>Duration</th><th>Marks</th><th>Status</th><th>Slots / Bookings</th><th>Availability Controls</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for exam in exams %}
+                <tr>
+                    <td>#{{ exam["exam_id"] }}<br><strong>{{ exam["exam_name"] }}</strong><br><small class="text-muted">{{ exam["exam_type"] }}</small></td>
+                    <td>{{ exam["course_code"] }}<br>{{ exam["course_name"] }}</td>
+                    <td>{{ exam["duration"] }} min</td><td>{{ exam["max_marks"] }} <br> <a href="{{ url_for('manage_rubric',exam_id=exam.exam_id) }}" class="btn btn-sm btn-info">Rubric</a></td>
+                    <td><span class="badge bg-{{ 'success' if exam['status']=='Active' else 'secondary' if exam['status']=='Draft' else 'primary' if exam['status']=='Completed' else 'danger' }}">{{ exam["status"] }}</span></td>
+                    <td><a href="{{ url_for('manage_exam_assignment',exam_id=exam.exam_id) }}" class="btn btn-sm btn-primary">Assign Examiners</a><br>{{ exam["slot_count"] }} slots<br>{{ exam["booking_count"] }} bookings</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('toggle_examination_window',exam_id=exam['exam_id']) }}" class="mb-2">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="field" value="slot_creation_enabled"><input type="hidden" name="value" value="{{ 0 if exam['slot_creation_enabled'] else 1 }}">
+                            <button class="btn btn-sm {{ 'btn-success' if exam['slot_creation_enabled'] else 'btn-outline-secondary' }}">Slots: {{ "Open" if exam["slot_creation_enabled"] else "Closed" }}</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('toggle_examination_window',exam_id=exam['exam_id']) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="field" value="booking_enabled"><input type="hidden" name="value" value="{{ 0 if exam['booking_enabled'] else 1 }}">
+                            <button class="btn btn-sm {{ 'btn-success' if exam['booking_enabled'] else 'btn-outline-secondary' }}">Booking: {{ "Open" if exam["booking_enabled"] else "Closed" }}</button>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ url_for('edit_examination',exam_id=exam['exam_id']) }}" class="btn btn-sm btn-outline-primary">Edit / Timeline</a>
+                            <form method="POST" action="{{ url_for('update_examination_status',exam_id=exam['exam_id']) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <select name="status" class="form-select form-select-sm mb-1">{% for s in ["Draft","Active","Completed","Cancelled"] %}<option value="{{ s }}" {% if exam["status"]==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select>
+                                <button class="btn btn-sm btn-outline-dark w-100">Update Status</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('delete_examination',exam_id=exam['exam_id']) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger w-100">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card card-body text-center"><h5>No examinations found</h5><p class="text-muted mb-0">Create an examination or adjust your search.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

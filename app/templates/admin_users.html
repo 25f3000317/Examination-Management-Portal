@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Manage Users | Examination Portal{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Manage Users</h2>
+            <p class="text-muted mb-0">View and manage student and examiner accounts.</p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">Dashboard</a>
+    </div>
+    <form method="GET" class="card card-body mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label">Search</label>
+                <input type="text" name="q" class="form-control" placeholder="Name or email" value="{{ q }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Role</label>
+                <select name="role" class="form-select">
+                    <option value="All" {% if role=="All" %}selected{% endif %}>All</option>
+                    <option value="Student" {% if role=="Student" %}selected{% endif %}>Student</option>
+                    <option value="Examiner" {% if role=="Examiner" %}selected{% endif %}>Examiner</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Account Status</label>
+                <select name="status" class="form-select">
+                    <option value="All" {% if status=="All" %}selected{% endif %}>All</option>
+                    <option value="Active" {% if status=="Active" %}selected{% endif %}>Active</option>
+                    <option value="Inactive" {% if status=="Inactive" %}selected{% endif %}>Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button class="btn btn-primary" type="submit">Search</button>
+                <a href="{{ url_for('manage_users') }}" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </div>
+    </form>
+    {% if users %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>User ID</th><th>Name</th><th>Email</th><th>Role</th><th>Profile ID</th><th>Account Status</th><th>Examiner Approval</th><th>Registered</th><th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user["user_id"] }}</td>
+                    <td>{{ user["name"] }}</td>
+                    <td>{{ user["email"] }}</td>
+                    <td>{{ user["role"] }}</td>
+                    <td>
+                        {% if user["role"]=="Examiner" and user["employee_id"] %}
+                            EMP{{ "%05d"|format(user["employee_id"]) }}
+                        {% elif user["role"]=="Student" and user["student_id"] %}
+                            {{ user["student_id"] }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if user['is_active'] else 'secondary' }}">{{ "Active" if user["is_active"] else "Inactive" }}</span>
+                    </td>
+                    <td>{{ user["approval_status"] or "-" }}</td>
+                    <td>{{ user["created_at"] }}</td>
+                    <td>
+                        {% if user["role"]=="Examiner" %}
+                        <form method="POST" action="{{ url_for('update_user_status',user_id=user['user_id']) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="is_active" value="{{ 0 if user['is_active'] else 1 }}">
+                            <input type="hidden" name="q" value="{{ q }}">
+                            <input type="hidden" name="role" value="{{ role }}">
+                            <input type="hidden" name="filter_status" value="{{ status }}">
+                            <button type="submit" class="btn btn-sm {{ 'btn-danger' if user['is_active'] else 'btn-success' }}">{{ "Deactivate" if user["is_active"] else "Activate" }}</button>
+                        </form>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card card-body text-center">
+        <h5>No users found</h5>
+        <p class="text-muted mb-0">Try changing your search or filters.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

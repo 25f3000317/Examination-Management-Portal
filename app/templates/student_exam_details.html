@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ exam.exam_name }} | Examination Portal{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ exam.exam_name }}</h2>
+        <a href="{{ url_for('student_examinations') }}" class="btn btn-outline-secondary">Back to Examinations</a>
+    </div>
+    <div class="card card-body mb-4">
+        <h5>Examination Details</h5>
+        <div class="row">
+            <div class="col-md-6"><p><strong>Course:</strong> {{ exam.course_code }} - {{ exam.course_name }}</p><p><strong>Department:</strong> {{ exam.department }}</p><p><strong>Type:</strong> {{ exam.exam_type }}</p><p><strong>Duration:</strong> {{ exam.duration }} minutes</p></div>
+            <div class="col-md-6"><p><strong>Maximum Marks:</strong> {{ exam.max_marks }}</p><p><strong>Exam Dates:</strong> {{ exam.exam_date_start }} to {{ exam.exam_date_end }}</p><p><strong>Daily Slot Timings:</strong> {{ exam.daily_slot_start }} to {{ exam.daily_slot_end }}</p><p><strong>Booking:</strong> {% if booking_open %}<span class="badge bg-success">Open</span>{% else %}<span class="badge bg-secondary">Closed</span>{% endif %}</p></div>
+        </div>
+        {% if exam.description %}<p class="mb-0"><strong>Description:</strong> {{ exam.description }}</p>{% endif %}
+    </div>
+    <h4 class="mb-3">Available Examination Slots</h4>
+    {% if slots %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light"><tr><th>Date</th><th>Time</th><th>Examiner</th><th>Capacity</th><th>Seats Remaining</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for slot in slots %}
+                <tr><td>{{ slot.slot_date }}</td><td>{{ slot.start_time }}–{{ slot.end_time }}</td><td>{{ slot.examiner_name }}</td><td>{{ slot.capacity }}</td><td>{{ slot.remaining }}</td><td>{% if slot.remaining>0 and booking_open %}<span class="badge bg-success">Available</span>{% elif slot.remaining<=0 %}<span class="badge bg-danger">Full</span>{% else %}<span class="badge bg-secondary">Booking Closed</span>{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card card-body text-center"><p class="mb-0">No upcoming active slots are currently available.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

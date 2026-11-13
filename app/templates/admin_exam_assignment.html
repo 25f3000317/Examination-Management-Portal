@@ -1,0 +1,57 @@
+
+{% extends "base.html" %}
+{% block title %}Examiner Assignment | Examination Portal{% endblock %}
+{% block content %}
+<div class="container mt-4">
+<h2>Examiner Assignment</h2>
+<p><strong>{{ exam.exam_name }}</strong> | Examination ID: {{ exam.exam_id }}</p>
+<div class="card card-body mb-4">
+<h5>Examination Schedule</h5>
+<p class="mb-1"><strong>Permitted dates:</strong> {{ exam.exam_date_start }} to {{ exam.exam_date_end }}</p>
+<p class="mb-0"><strong>Daily timings:</strong> {{ exam.daily_slot_start }} to {{ exam.daily_slot_end }}</p>
+</div>
+<div class="card card-body mb-4">
+<h5>Assign Examiners</h5>
+{% if available %}
+<form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="mb-3">
+{% for e in available %}
+<div class="form-check">
+<input class="form-check-input" type="checkbox" name="examiner_ids" value="{{ e.employee_id }}" id="examiner{{ e.employee_id }}">
+<label class="form-check-label" for="examiner{{ e.employee_id }}">{{ e.name }} - EMP{{ "%05d"|format(e.employee_id) }} ({{ e.department }})</label>
+</div>
+{% endfor %}
+</div>
+<button class="btn btn-primary">Assign Selected Examiners</button>
+</form>
+{% else %}
+<p>No additional approved and active examiners are available.</p>
+{% endif %}
+</div>
+<h5>Currently Assigned Examiners</h5>
+<table class="table table-bordered table-hover">
+<thead><tr><th>Employee ID</th><th>Name</th><th>Email</th><th>Department</th><th>Account</th><th>Action</th></tr></thead>
+<tbody>
+{% for e in assigned %}
+<tr>
+<td>EMP{{ "%05d"|format(e.employee_id) }}</td>
+<td>{{ e.name }}</td>
+<td>{{ e.email }}</td>
+<td>{{ e.department }}</td>
+<td>{{ 'Active' if e.is_active else 'Deactivated' }}</td>
+<td>
+<form method="POST" action="{{ url_for('remove_exam_assignment',exam_id=exam.exam_id,examiner_id=e.employee_id) }}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<button class="btn btn-danger btn-sm">Unassign</button>
+</form>
+</td>
+</tr>
+{% else %}
+<tr><td colspan="6">No examiners assigned yet.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+<a href="{{ url_for('manage_examinations') }}" class="btn btn-secondary">Back to Examinations</a>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>All Examination Slots</h2>
+         <div class="d-flex gap-2"><a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">Dashboard</a></div>
+    </div>
+<form method="GET" class="mb-3">
+<div class="input-group">
+<input name="q" class="form-control" placeholder="Search examination, course, examiner or ID" value="{{ q }}">
+<button class="btn btn-primary">Search</button>
+<a href="{{ url_for('manage_all_slots') }}" class="btn btn-secondary">Reset</a>
+</div>
+</form>
+<table class="table table-bordered table-hover">
+<thead><tr><th>Slot ID</th><th>Examination</th><th>Course</th><th>Examiner</th><th>Date</th><th>Time</th><th>Capacity</th><th>Booked</th><th>Status</th></tr></thead>
+<tbody>
+{% for slot in slots %}
+<tr>
+<td>{{ slot.slot_id }}</td>
+<td>{{ slot.exam_name }}</td>
+<td>{{ slot.course_name }}</td>
+<td>{{ slot.examiner_name }} (EMP{{ "%05d"|format(slot.employee_id) }})</td>
+<td>{{ slot.slot_date }}</td>
+<td>{{ slot.start_time }} - {{ slot.end_time }}</td>
+<td>{{ slot.capacity }}</td>
+<td>{{ slot.booking_count }}</td>
+<td>{{ 'Active' if slot.is_active else 'Inactive' }}</td>
+</tr>
+{% else %}
+<tr><td colspan="9">No examination slots found.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

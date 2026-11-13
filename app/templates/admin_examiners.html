@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Manage Examiners | Examination Portal{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Manage Examiners</h2>
+            <p class="text-muted mb-0">Review applications and manage examiner approval status.</p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">Dashboard</a>
+    </div>
+    <ul class="nav nav-tabs mb-4">
+        {% for tab in ["Pending","Approved","Rejected"] %}
+        <li class="nav-item">
+            <a class="nav-link {% if status == tab %}active{% endif %}" href="{{ url_for('manage_examiners',status=tab) }}">
+                {{ tab }} <span class="badge bg-secondary">{{ status_counts.get(tab,0) }}</span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% if examiners %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Registered</th>
+                    <th>Change Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for examiner in examiners %}
+                <tr>
+                    <td>EMP{{ "%05d"|format(examiner["employee_id"]) }}</td>
+                    <td>{{ examiner["name"] }}</td>
+                    <td>{{ examiner["email"] }}</td>
+                    <td>{{ examiner["department"] }}</td>
+                    <td>{{ examiner["designation"] }}</td>
+                    <td>{{ examiner["created_at"] }}</td>
+                    <td>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for target in ["Pending","Approved","Rejected"] %}
+                            {% if target != status %}
+                            <form method="POST" action="{{ url_for('update_examiner_status',employee_id=examiner['employee_id']) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="status" value="{{ target }}">
+                                <input type="hidden" name="tab" value="{{ status }}">
+                                <button type="submit" class="btn btn-sm {% if target == 'Approved' %}btn-success{% elif target == 'Rejected' %}btn-danger{% else %}btn-warning{% endif %}">
+                                    {{ target }}
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card p-4 text-center">
+        <h5>No {{ status }} Examiners</h5>
+        <p class="text-muted mb-0">There are currently no examiners in this category.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

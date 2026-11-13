@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+{% block title %}Assigned Examinations | Examination Portal{% endblock %}
+{% block content %}
+<div class="container mt-4">
+<h2>Assigned Examinations</h2>
+<table class="table table-bordered table-hover">
+<thead>
+<tr><th>Examination</th><th>Course</th><th>Permitted Dates</th><th>Daily Timings</th><th>Status</th><th>Slots</th><th>Actions</th></tr>
+</thead>
+<tbody>
+{% for exam in exams %}
+<tr>
+<td>{{ exam.exam_name }}</td>
+<td>{{ exam.course_name }} ({{ exam.course_code }})</td>
+<td>{{ exam.exam_date_start }} to {{ exam.exam_date_end }}</td>
+<td>{{ exam.daily_slot_start }} - {{ exam.daily_slot_end }}</td>
+<td>{{ exam.status }}</td>
+<td>{{ exam.slot_count }}</td>
+<td>
+<a class="btn btn-primary btn-sm" href="{{ url_for('examiner_slots',exam_id=exam.exam_id) }}">Manage Slots</a>
+</td>
+</tr>
+{% else %}
+<tr><td colspan="7">No examinations assigned.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

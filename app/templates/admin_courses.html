@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Manage Courses | Examination Portal{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div><h2>Manage Courses</h2><p class="text-muted mb-0">Create, edit and remove courses.</p></div>
+        <div class="d-flex gap-2"><a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">Dashboard</a><a href="{{ url_for('create_course') }}" class="btn btn-primary">Add Course</a></div>
+    </div>
+    <form method="GET" class="card card-body mb-4">
+        <div class="d-flex gap-2"><input name="q" class="form-control" value="{{ q }}" placeholder="Search by course name, code, department or ID"><button class="btn btn-primary">Search</button><a href="{{ url_for('manage_courses') }}" class="btn btn-outline-secondary">Reset</a></div>
+    </form>
+    {% if courses %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light"><tr><th>ID</th><th>Course</th><th>Code</th><th>Department</th><th>Examinations</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course["course_id"] }}</td><td>{{ course["course_name"] }}<br><small class="text-muted">{{ course["description"] or "" }}</small></td><td>{{ course["course_code"] }}</td><td>{{ course["department"] }}</td><td>{{ course["exam_count"] }}</td>
+                    <td><div class="d-flex gap-2"><a href="{{ url_for('edit_course',course_id=course['course_id']) }}" class="btn btn-sm btn-outline-primary">Edit</a><form method="POST" action="{{ url_for('delete_course',course_id=course['course_id']) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger">Delete</button></form></div></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card card-body text-center"><h5>No courses found</h5><p class="text-muted mb-0">Add a course or change your search.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

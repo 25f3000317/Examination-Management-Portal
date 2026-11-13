@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+<h2>{{ 'Edit' if criterion else 'Add' }} Rubric Criterion</h2>
+<p>Maximum examination marks: {{ rubric.exam_max_marks }}</p>
+<form method="POST" class="card card-body">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="mb-3">
+<label class="form-label">Criterion Name</label>
+<input class="form-control" name="criterion_name" maxlength="150" required value="{{ criterion.criterion_name if criterion else '' }}">
+</div>
+<div class="mb-3">
+<label class="form-label">Description</label>
+<textarea class="form-control" name="description">{{ criterion.description if criterion else '' }}</textarea>
+</div>
+<div class="mb-3">
+<label class="form-label">Maximum Marks</label>
+<input class="form-control" type="number" name="max_marks" min="1" required value="{{ criterion.max_marks if criterion else '' }}">
+</div>
+<div class="mb-3">
+<label class="form-label">Weightage (%)</label>
+<input class="form-control" type="number" name="weightage" min="0.01" max="100" step="0.01" required value="{{ criterion.weightage if criterion else '' }}">
+</div>
+<button class="btn btn-primary">Save Criterion</button>
+<a href="{{ url_for('manage_rubric',exam_id=rubric.exam_id) }}" class="btn btn-secondary mt-2">Cancel</a>
+</form>
+</div>
+{% endblock %}

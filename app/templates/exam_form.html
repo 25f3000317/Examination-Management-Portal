@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit Examination" if exam else "Create Examination" }} | Examination Portal{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ "Edit Examination" if exam else "Create Examination" }}</h2>
+        <a href="{{ url_for('manage_examinations') }}" class="btn btn-outline-secondary">Back</a>
+    </div>
+    <div class="card card-body">
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Course</label>
+                    <select name="course_id" class="form-select" required>
+                        <option value="">Select course</option>
+                        {% for course in courses %}
+                        <option value="{{ course['course_id'] }}" {% if (exam and exam['course_id']|string==course['course_id']|string) or (not exam and request.form.get('course_id')==course['course_id']|string) %}selected{% endif %}>
+                            {{ course["course_code"] }} - {{ course["course_name"] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Examination Name</label>
+                    <input name="exam_name" class="form-control" maxlength="150" required value="{{ exam['exam_name'] if exam else request.form.get('exam_name','') }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Examination Type</label>
+                    <input name="exam_type" class="form-control" maxlength="50" placeholder="Practical / Viva / Project" required value="{{ exam['exam_type'] if exam else request.form.get('exam_type','') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Duration (minutes)</label>
+                    <input type="number" name="duration" class="form-control" min="1" required value="{{ exam['duration'] if exam else request.form.get('duration','') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Maximum Marks</label>
+                    <input type="number" name="max_marks" class="form-control" min="1" required value="{{ exam['max_marks'] if exam else request.form.get('max_marks','') }}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="2">{{ exam['description'] if exam else request.form.get('description','') }}</textarea>
+                </div>
+
+                <div class="col-12"><hr><h5>Permitted Examination Schedule</h5></div>
+                <div class="col-md-6">
+                    <label class="form-label">First Permitted Examination Date</label>
+                    <input type="date" name="exam_date_start" class="form-control" required value="{{ exam['exam_date_start'] if exam else request.form.get('exam_date_start','') }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Last Permitted Examination Date</label>
+                    <input type="date" name="exam_date_end" class="form-control" required value="{{ exam['exam_date_end'] if exam else request.form.get('exam_date_end','') }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Earliest Daily Slot Time</label>
+                    <input type="time" name="daily_slot_start" class="form-control" required value="{{ exam['daily_slot_start'] if exam else request.form.get('daily_slot_start','09:00') }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Latest Daily Slot Time</label>
+                    <input type="time" name="daily_slot_end" class="form-control" required value="{{ exam['daily_slot_end'] if exam else request.form.get('daily_slot_end','17:00') }}">
+                </div>
+
+                <div class="col-12"><hr><h5>Examiner Slot Creation Timeline</h5></div>
+                <div class="col-md-6">
+                    <label class="form-label">Slot Creation Opens</label>
+                    <input type="datetime-local" name="slot_creation_start" class="form-control" required value="{{ exam['slot_creation_start'] if exam else request.form.get('slot_creation_start','') }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Slot Creation Closes</label>
+                    <input type="datetime-local" name="slot_creation_end" class="form-control" required value="{{ exam['slot_creation_end'] if exam else request.form.get('slot_creation_end','') }}">
+                </div>
+
+                <div class="col-12"><hr><h5>Student Booking Timeline</h5></div>
+                <div class="col-md-6">
+                    <label class="form-label">Booking Opens</label>
+                    <input type="datetime-local" name="booking_start" class="form-control" required value="{{ exam['booking_start'] if exam else request.form.get('booking_start','') }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Booking Closes</label>
+                    <input type="datetime-local" name="booking_end" class="form-control" required value="{{ exam['booking_end'] if exam else request.form.get('booking_end','') }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Examination Status</label>
+                    <select name="status" class="form-select">
+                        {% for s in ["Draft","Active","Completed","Cancelled"] %}
+                        <option value="{{ s }}" {% if (exam and exam['status']==s) or (not exam and request.form.get('status','Draft')==s) %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button class="btn btn-primary">{{ "Save Changes" if exam else "Create Examination" }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
